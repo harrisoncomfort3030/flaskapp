@@ -19,10 +19,10 @@
       {% endfor %}
     </ul>
     <script>
-    document.getElementbyID('form'.onsubmit = function (e) {
+    document.getElementById('form').onsubmit = function (e) {
       e.preventDefault();
       fetch('/todos/create', {
-        method: 'POST'
+        method: 'POST',
         body: JSON.stringify({
           'description':document.getElementById('description').value
         }),
@@ -42,7 +42,7 @@
       })
       .catch(function() {
         document.getElementById('error').classname='';
-      }
+      })
     }
     </script>
   </body>
