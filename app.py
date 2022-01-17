@@ -6,8 +6,10 @@ import sys
 
 app = Flask(__name__)
 
-db = SQLAlchemy(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://harrison.comfort:xxx@localhost:5432/todos'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
 
 class Todo(db.Model):
     __tablename__ = 'todos'
@@ -19,6 +21,7 @@ def __repr__(self):
     return f'<Todo {self.id} {self.description}>'
 
 #ensures that tables are created for models we create
+#db.drop_all()
 db.create_all()
 
 #controlers
