@@ -7,7 +7,7 @@ import sys
 app = Flask(__name__)
 
 db = SQLAlchemy(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://harrison.comfort:dreamsmoneycanbuy@localhost:5432/todos'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://harrison.comfort:xxx@localhost:5432/todos'
 
 class Todo(db.Model):
     __tablename__ = 'todos'
