@@ -62,10 +62,22 @@ def set_completed_todo(todo_id):
     db.session.close()
   return redirect(url_for('index'))
 
+@app.route('/todos/<todo_id>/set-deleted', methods=['DELETE'])
+def set_deleted_todo(todo_id):
+    try:
+        todo=Todo.query.filter_by(id=todo_id)
+        todo.delete()
+        db.session.commit()
+    except:
+        db.session.rollback()
+    finally:
+        db.session.close()
+    return jsonify({ 'success': True })
+
 @app.route('/')
 #controller->
 def index():
-    return render_template('index.html', data=Todo.query.all())
+    return render_template('index.html', data=Todo.query.order_by('id').all())
 
 #always include this at the bototm of vode
 if __name__ == '__main__':
