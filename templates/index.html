@@ -9,6 +9,19 @@
       list-style: none;
       padding:0;
       margin:0;
+      width:200px;
+    }
+    li {
+      clear: both;
+    }
+    li button {
+      -webkit-appearance: none;
+      border: none;
+      outline: none;
+      color: green;
+      float: right;
+      cursor: pointer;
+      font-size: 20px;
     }
     </style>
   </head>
@@ -20,7 +33,11 @@
     <div id="error" class="hidden">BUST!!!!</div>
     <ul id ="todos">
       {% for d in data %}
-      <li><input class="check-completed" data-id=" {{ d.id  }}" type="checkbox" {% if d.completed %} checked {% endif %} /> {{ d.description }}</li>
+      <li>
+        <input class="check-completed" data-id=" {{ d.id  }}" type="checkbox" {% if d.completed %} checked {% endif %} />
+        {{ d.description }}
+        <button class="deleted-item" data-id= "{{ d.id }}">&cross;</button>
+      </li>
       {% endfor %}
     </ul>
     <script>
@@ -45,6 +62,17 @@
           .catch(function() {
             document.getElementById('error').className = '';
           })
+        }
+      }
+
+      const deleted_items = document.querySelectorAll('.deleted-item');
+      for (let i = 0; i < deleted_items.length; i++) {
+        const deleted_item = deleted_items[i];
+        deleted_item.onclick = function(e) {
+          const todoId = e.target.dataset['id']
+          fetch('/todos/' + todoId + '/set-deleted', {
+            method: 'DELETE'
+          });
         }
       }
       document.getElementById('form').onsubmit = function(e) {
