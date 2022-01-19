@@ -102,6 +102,7 @@ def set_completed_todo(todo_id):
 
 @app.route('/todos/<list_id>/set-completed', methods=['POST'])
 def set_completed_list(list_id):
+    error = False
     try:
         list = TodoList.query.get(list_id)
         for todo in list.todos:
