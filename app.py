@@ -32,6 +32,21 @@ class Todo(db.Model):
 def __repr__(self):
     return f'<Todo {self.id} {self.description}, list {self.list_id}>'
 
+order_items = db.Table('order_items',
+    db.Column('order_id', db.Integer, db.ForeignKey('order.id'), primary_key=True),
+    db.Column('product_id', db.Integer, db.ForeignKey('product.id'), primary_key=True)
+)
+
+class Order(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  status = db.Column(db.String(), nullable=False)
+  products = db.relationship('Product', secondary=order_items,
+      backref=db.backref('orders', lazy=True))
+
+class Product(db.Model):
+  id = db.Column(db.Integer, primary_key=True)
+  name = db.Column(db.String(), nullable=False)
+
 #ensures that tables are created for models we create
 #db.drop_all()
 #db.create_all()
@@ -50,9 +65,10 @@ def create_todo():
         db.session.add(todo)
         db.session.commit()
         body['description'] = todo.description
-        body['complete'] = todo.complete
+        body['completed'] = todo.completed
         body['id'] = todo.id
-    except:
+    except Exception as e:
+        print(e)
         error=True
         db.session.rollback()
         print(sys.exc_info())
@@ -72,8 +88,8 @@ def create_todo_list():
         todolist = TodoList(name=name)
         db.session.add(todolist)
         db.session.commit()
-        body['name'] = todolist.name
         body['id'] = todolist.id
+        body['name'] = todolist.name
     except:
         db.session.rollback()
         error = True
@@ -100,7 +116,7 @@ def set_completed_todo(todo_id):
     db.session.close()
   return redirect(url_for('index'))
 
-@app.route('/todos/<list_id>/set-completed', methods=['POST'])
+@app.route('/todos/<list_id>/list-completed', methods=['POST'])
 def set_completed_list(list_id):
     error = False
     try:

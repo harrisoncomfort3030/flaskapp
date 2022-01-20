@@ -52,7 +52,7 @@
 
     <div class="todos-section">
       <h4> Todo Items</h4>
-    <form action="/todos/create/item" method="POST" id="item_form">
+    <form action="/todos/create/item" method="POST" id="item-form">
       <input id="list_id" type="hidden" value="{{ active_list.id }}">
       <label for="description">Create Task:</label>
       <input type="text" name="description" id="description" placeholder="A New Item" />
@@ -78,7 +78,7 @@
       checkbox.onchange = function(e) {
         const newCompleted = e.target.checked;
         const listId = e.target.dataset['id'];
-        fetch('/todos/' + listId + '/set-completed', {
+        fetch('/todos/' + listId + '/list-completed', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -138,6 +138,7 @@
             const item = e.target.parentElement;
             item.remove;
             document.getElementById("error").classname = "hidden";
+            window.location.reload(true);
           })
         }
       }
@@ -163,13 +164,14 @@
         };
       }
 
-      document.getElementById('item_form').onsubmit = function(e) {
+      document.getElementById('item-form').onsubmit = function (e) {
         e.preventDefault();
+
         fetch('/todos/create/item', {
           method: 'POST',
           body: JSON.stringify({
             'description': document.getElementById('description').value,
-            'list_id': {{ active_list.id }}
+            'list_id': document.getElementById('list_id').value
           }),
           headers: {
             'Content-Type': 'application/json'
@@ -184,14 +186,15 @@
           liItem.innerHTML = jsonResponse['description'];
           document.getElementById('todos').appendChild(liItem);
           document.getElementById('error').className = 'hidden';
+          window.location.reload(true);
         })
         .catch(function() {
           document.getElementById('error').className = '';
 
         })
-        document.getElementById('list-form').onsubmit = function(e) {
+        document.getElementById('list-form').onsubmit = function (e) {
           e.preventDefault();
-          
+
           fetch('/todos/create/list', {
             method: 'POST',
             body: JSON.stringify({
